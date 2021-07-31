@@ -1,0 +1,16 @@
+{
+  "name": "rental_king_motor",
+  "version": "1.0.0",
+  "description": "api untuk rental king motor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sulthanqintara/Rental-King-Motor.git"
+  },
+  "author": "Sulthan Qintara",
+  "license": "ISC",
+  "homepage": "https://github.com/sulthanqintara/Rental-King-Motor#readme"
+}
