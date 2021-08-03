@@ -4,7 +4,9 @@
   "description": "api untuk rental king motor",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint ./"
   },
   "repository": {
     "type": "git",
@@ -12,5 +14,16 @@
   },
   "author": "Sulthan Qintara",
   "license": "ISC",
-  "homepage": "https://github.com/sulthanqintara/Rental-King-Motor#readme"
+  "homepage": "https://github.com/sulthanqintara/Rental-King-Motor#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.5",
+    "@typescript-eslint/parser": "^4.28.5",
+    "eslint": "^7.32.0"
+  }
 }
