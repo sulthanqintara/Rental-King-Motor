@@ -11,7 +11,6 @@ const postNewHistory = (req, res) => {
 
 const getHistory = (req, res) => {
   const { query } = req;
-
   historyModel
     .getHistory(query)
     .then((data) => responseHelper.success(res, 200, data))

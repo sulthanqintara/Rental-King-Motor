@@ -15,24 +15,8 @@ const updateHistory = (req, res) => {
   // for (let i = 9; i < 9+body.length;i++){}
   const { query } = req;
   popularityModel
-    .getHistoryAmount(query)
-    .then((data) => {
-      const queryString =
-        "UPDATE popularity p SET p.amount_rented = ? WHERE p.id = ?";
-      const queryPromise = new Promise((resolve, reject) => {
-        db.query(
-          queryString,
-          [data.length, mysql.raw(query.model)],
-          (error, result) => {
-            if (error) return reject(error);
-            return resolve(result);
-          }
-        );
-      });
-      queryPromise
-        .then((data) => responseHelper.success(res, 200, data))
-        .catch((err) => responseHelper.error(res, 500, err));
-    })
+    .updateHistoryAmount(query)
+    .then((data) => responseHelper.success(res, 200, data))
     .catch((err) => responseHelper.error(res, 500, err));
 };
 

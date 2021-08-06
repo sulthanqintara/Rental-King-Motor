@@ -11,12 +11,21 @@ const viewPopularVehicles = (query) => {
   });
 };
 
-const getHistoryAmount = (query) => {
-  const queryString = "SELECT * FROM history WHERE model = ?";
+const updateHistoryAmount = (query) => {
+  const queryString = "SELECT * FROM history WHERE id = ?";
   return new Promise((resolve, reject) => {
     db.query(queryString, mysql.raw(query.model), (err, result) => {
       if (err) return reject(err);
-      return resolve(result);
+      const queryUpdate =
+        "UPDATE popularity p SET p.amount_rented = ? WHERE p.id = ?";
+      db.query(
+        queryUpdate,
+        [result.length, mysql.raw(query.model)],
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result);
+        }
+      );
     });
   });
 };
@@ -32,6 +41,6 @@ const postNewPopularity = (body) => {
 };
 module.exports = {
   viewPopularVehicles,
-  getHistoryAmount,
+  updateHistoryAmount,
   postNewPopularity,
 };

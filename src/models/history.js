@@ -13,37 +13,26 @@ const postNewHistory = (body) => {
 
 const getHistory = (query) => {
   return new Promise((resolve, reject) => {
-    let filter = "";
-    let inputValue = "";
-    let order_by = "";
-    let sort = "";
-    let queryString = `SELECT h.id, u.user_name AS "renter", v.model AS "model", h.prepayment, h.returned_status, h.rent_start_date, h.rent_finish_date FROM history h JOIN users u ON h.renter_id = u.id JOIN vehicles v ON h.model = v.id`;
-    const queryFilter = " WHERE ?";
-    const querySort = " ORDER BY ? ?";
-    const queryFind = " LIKE '%?%'";
-    if (query?.filter) {
-      queryString += queryFilter;
-      filter = mysql.raw(query.filter);
-    }
-    if (query?.keyword) {
-      queryString += queryFind;
-      inputValue = mysql.raw(query.keyword);
-    }
+    let search = "h.id";
+    let keyword = "";
+    let order_by = "h.id";
+    let sort = "ASC";
+    let filter = "h.id > 0";
+    if (query?.search) search = query.search;
+    if (query?.keyword) keyword = query.keyword;
     if (query?.order_by && query?.sort) {
-      order_by = mysql.raw(query.order_by);
-      sort = mysql.raw(query.sort);
-      queryString += querySort;
+      order_by = query.order_by;
+      sort = query.sort;
     }
-    db.query(
-      queryString,
-      [filter, inputValue, order_by, sort],
-      (error, result) => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve(result);
+    if (query?.filter) filter = query.filter;
+    let queryString = `SELECT h.id, u.name AS "renter", v.model AS "model", h.prepayment, h.returned_status, h.rent_start_date, h.rent_finish_date FROM history h JOIN users u ON h.user_id = u.id JOIN vehicles v ON h.model_id = v.id WHERE ${search} LIKE "%${keyword}%" AND ${filter} ORDER BY ${order_by} ${sort}`;
+
+    db.query(queryString, (error, result) => {
+      if (error) {
+        return reject(error);
       }
-    );
+      return resolve(result);
+    });
   });
 };
 
