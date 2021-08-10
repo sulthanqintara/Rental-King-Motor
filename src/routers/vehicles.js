@@ -15,7 +15,13 @@ vehiclesRouter.post(
   vehicleHandler.addNewVehicles
 );
 vehiclesRouter.delete("/", vehicleHandler.deleteVehicles);
-vehiclesRouter.patch("/:id", vehicleHandler.patchByID);
+vehiclesRouter.patch(
+  "/:id",
+  authMiddleware.checkToken,
+  upload.uploadImage.array("picture", 5),
+  fileValidation,
+  vehicleHandler.patchByID
+);
 vehiclesRouter.patch("/popularity/:id", vehicleHandler.popularVehicles);
 
 module.exports = vehiclesRouter;

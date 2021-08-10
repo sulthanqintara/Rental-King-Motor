@@ -1,7 +1,8 @@
 const db = require("../database/mysql");
 
-const addNewVehicles = (body, files, hostname) => {
+const addNewVehicles = (req) => {
   return new Promise((resolve, reject) => {
+    const { body, files, hostname } = req;
     let picture = "";
     if (files) {
       for (let i = 0; i < files.length; i++) {
@@ -64,11 +65,21 @@ const deleteVehicles = (body) => {
   });
 };
 
-const patchByID = (body, params) => {
+const patchByID = (req) => {
+  const { body, params, files, hostname } = req;
   let id = params.id;
+  let picture = "";
+  if (files) {
+    for (let i = 0; i < files.length; i++) {
+      picture += `http://${hostname}:8000/img/${files[i].filename}, `;
+    }
+  }
+  let input = {
+    picture,
+  };
   return new Promise((resolve, reject) => {
-    const queryString = "UPDATE vehicles SET ? WHERE id = ?";
-    db.query(queryString, [body, id], (err, result) => {
+    const queryString = "UPDATE vehicles SET ? , ? WHERE id = ?";
+    db.query(queryString, [body, input, id], (err, result) => {
       if (err) return reject(err);
       return resolve(result);
     });

@@ -3,10 +3,8 @@ const responseHelper = require("../helper/response");
 const mysql = require("mysql");
 
 const addNewVehicles = (req, res) => {
-  const { body, files, hostname } = req;
-  console.log(req.files[0].originalname);
   vehiclesModel
-    .addNewVehicles(body, files, hostname)
+    .addNewVehicles(req)
     .then((data) => responseHelper.success(res, 200, data))
     .catch((err) => responseHelper.error(res, 500, err));
 };
@@ -48,10 +46,8 @@ const deleteVehicles = (req, res) => {
 };
 
 const patchByID = (req, res) => {
-  const { body } = req;
-  let { params } = req;
   vehiclesModel
-    .patchByID(body, params)
+    .patchByID(req)
     .then((data) => responseHelper.success(res, 200, data))
     .catch((err) => responseHelper.error(res, 500, err));
 };
