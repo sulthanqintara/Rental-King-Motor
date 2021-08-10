@@ -1,7 +1,7 @@
 require("dotenv").config();
-// const { json } = require("express");
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const mainRouter = require("./src/routers/");
 
@@ -13,6 +13,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("dev"));
 
+app.use(express.static("public"));
+
+// app.use(cors());
 app.use(mainRouter);
 
 // Base url => http://localhost:8000

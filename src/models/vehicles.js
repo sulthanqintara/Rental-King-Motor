@@ -1,5 +1,5 @@
 const db = require("../database/mysql");
-const mysql = require("mysql");
+const responseHelper = require("../helper/response");
 
 const addNewVehicles = (body) => {
   return new Promise((resolve, reject) => {
@@ -18,6 +18,9 @@ const getVehicles = (query) => {
     let order_by = "v.id";
     let sort = "ASC";
     let filter = "v.id > 0";
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 3;
+    const offset = limit * (page - 1);
     if (query?.search) search = query.search;
     if (query?.keyword) keyword = query.keyword;
     if (query?.order_by && query?.sort) {
@@ -25,12 +28,20 @@ const getVehicles = (query) => {
       sort = query.sort;
     }
     if (query?.filter) filter = query.filter;
-    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE ${search} LIKE "%${keyword}%" AND ${filter} ORDER BY ${order_by} ${sort}`;
-    console.log(queryString);
+    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE ${search} LIKE "%${keyword}%" AND ${filter} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    let queryCount = `SELECT COUNT(*) AS "total_vehicles" FROM vehicles`;
     db.query(queryString, (error, result) => {
-      console.log(search, keyword);
       if (error) return reject(error);
-      return resolve(result);
+      if (!result.length) return reject(404);
+      db.query(queryCount, (err, resultTotal) => {
+        if (err) return reject(err);
+        return resolve({
+          data: result,
+          totalCount: resultTotal,
+          currentPage: page,
+          limit,
+        });
+      });
     });
   });
 };

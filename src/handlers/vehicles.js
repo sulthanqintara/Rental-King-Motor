@@ -14,7 +14,27 @@ const getVehicles = (req, res) => {
   const { query } = req;
   vehiclesModel
     .getVehicles(query)
-    .then((data) => responseHelper.success(res, 200, data))
+    .then(({ data, totalCount, currentPage, limit }) => {
+      const totalData = totalCount[0].total_vehicles;
+      const totalPage = Math.ceil(totalData / limit);
+      const baseURL = "http://localhost:8000/vehicles";
+      const prevPage =
+        currentPage > 1
+          ? baseURL + `?page=${currentPage - 1}&limit=${limit}`
+          : null;
+      const nextPage =
+        currentPage < totalPage
+          ? baseURL + `?page=${currentPage + 1}&limit=${limit}`
+          : null;
+      const info = {
+        totalData,
+        currentPage,
+        totalPage,
+        nextPage,
+        prevPage,
+      };
+      responseHelper.success(res, 200, data, info);
+    })
     .catch((err) => responseHelper.error(res, 500, err));
 };
 
