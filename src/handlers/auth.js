@@ -11,9 +11,9 @@ const login = (req, res) => {
 };
 
 const register = (req, res) => {
-  const { body } = req;
+  const { body, file, hostname } = req;
   userModel
-    .createNewUser(body)
+    .createNewUser(body, file, hostname)
     .then((result) => responseHelper.success(res, 201, result))
     .catch((err) => responseHelper.error(res, 500, err.message));
 };

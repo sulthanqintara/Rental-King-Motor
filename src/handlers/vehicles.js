@@ -3,21 +3,22 @@ const responseHelper = require("../helper/response");
 const mysql = require("mysql");
 
 const addNewVehicles = (req, res) => {
-  const { body } = req;
+  const { body, files, hostname } = req;
+  console.log(req.files[0].originalname);
   vehiclesModel
-    .addNewVehicles(body)
+    .addNewVehicles(body, files, hostname)
     .then((data) => responseHelper.success(res, 200, data))
     .catch((err) => responseHelper.error(res, 500, err));
 };
 
 const getVehicles = (req, res) => {
-  const { query } = req;
+  const { query, hostname } = req;
   vehiclesModel
     .getVehicles(query)
     .then(({ data, totalCount, currentPage, limit }) => {
       const totalData = totalCount[0].total_vehicles;
       const totalPage = Math.ceil(totalData / limit);
-      const baseURL = "http://localhost:8000/vehicles";
+      const baseURL = `http://${hostname}:8000/vehicles`;
       const prevPage =
         currentPage > 1
           ? baseURL + `?page=${currentPage - 1}&limit=${limit}`
@@ -55,9 +56,18 @@ const patchByID = (req, res) => {
     .catch((err) => responseHelper.error(res, 500, err));
 };
 
+const popularVehicles = (req, res) => {
+  const { params } = req;
+  vehiclesModel
+    .popularVehicles(params)
+    .then((data) => responseHelper.success(res, 200, data))
+    .catch((err) => responseHelper.error(res, 500, err));
+};
+
 module.exports = {
   addNewVehicles,
   getVehicles,
   deleteVehicles,
   patchByID,
+  popularVehicles,
 };

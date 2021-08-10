@@ -10,9 +10,9 @@ const updatePassword = (req, res) => {
 };
 
 const editUser = (req, res) => {
-  const { file, params, body } = req;
+  const { file, params, body, hostname } = req;
   userModel
-    .editUser(file, params.id, body)
+    .editUser(file, params.id, body, hostname)
     .then((result) => responseHelper.success(res, 200, result))
     .catch((err) => responseHelper.error(res, 500, err));
 };

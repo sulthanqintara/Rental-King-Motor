@@ -9,7 +9,6 @@ const storage = multer.diskStorage({
     const nameFormat = `${file.fieldname}-${Date.now()}-${Math.floor(
       Math.random() * 1000 * 1000
     )}${path.extname(file.originalname)}`;
-    console.log(file);
     cb(null, nameFormat);
   },
 });
@@ -23,7 +22,6 @@ const fileFilter = (req, file, cb) => {
     req.fileValidationError = "File format must be jpg, jpeg, or png!";
     return cb(null, false, new Error(req.fileValidationError));
   }
-
   return cb(null, true);
 };
 

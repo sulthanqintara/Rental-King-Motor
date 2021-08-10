@@ -1,9 +1,17 @@
 const bcrypt = require("bcrypt");
 const db = require("../database/mysql");
 
-const createNewUser = (body) => {
+const createNewUser = (body, file, hostname) => {
   return new Promise((resolve, reject) => {
-    const query = "INSERT INTO users SET ?";
+    let input = {
+      profile_picture: "",
+    };
+    if (file) {
+      input = {
+        profile_picture: `http://${hostname}:8000/img/${file.filename}`,
+      };
+    }
+    const query = "INSERT INTO users SET ? , ?";
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return reject(err);
       bcrypt.hash(body.password, salt, (err, hash) => {
@@ -12,7 +20,7 @@ const createNewUser = (body) => {
           ...body,
           password: hash,
         };
-        db.query(query, userData, (err, result) => {
+        db.query(query, [userData, input], (err, result) => {
           if (err) return reject(err);
           return resolve(result);
         });
@@ -46,14 +54,14 @@ const updatePassword = (body, id) => {
   });
 };
 
-const editUser = (file, id, body) => {
+const editUser = (file, id, body, hostname) => {
   return new Promise((resolve, reject) => {
     const getFileQuery = "SELECT profile_picture FROM users WHERE id = ?";
     db.query(getFileQuery, id, (err, dbUrl) => {
       let input;
       if (err) return reject(err);
       if (file) {
-        const host = "http://localhost:8000";
+        const host = `http://${hostname}:8000`;
         const imageUrl = `/img/${file.filename}`;
         input = {
           profile_picture: host + imageUrl,

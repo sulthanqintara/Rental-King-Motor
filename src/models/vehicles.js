@@ -1,10 +1,18 @@
 const db = require("../database/mysql");
-const responseHelper = require("../helper/response");
 
-const addNewVehicles = (body) => {
+const addNewVehicles = (body, files, hostname) => {
   return new Promise((resolve, reject) => {
-    const queryString = "INSERT INTO vehicles SET ?";
-    db.query(queryString, body, (err, result) => {
+    let picture = "";
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        picture += `http://${hostname}:8000/img/${files[i].filename}, `;
+      }
+    }
+    let input = {
+      picture,
+    };
+    const queryString = "INSERT INTO vehicles SET ? , ?";
+    db.query(queryString, [body, input], (err, result) => {
       if (err) return reject(err);
       return resolve(result);
     });
@@ -28,7 +36,7 @@ const getVehicles = (query) => {
       sort = query.sort;
     }
     if (query?.filter) filter = query.filter;
-    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE ${search} LIKE "%${keyword}%" AND ${filter} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE ${search} LIKE "%${keyword}%" AND ${filter} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
     let queryCount = `SELECT COUNT(*) AS "total_vehicles" FROM vehicles`;
     db.query(queryString, (error, result) => {
       if (error) return reject(error);
@@ -67,9 +75,26 @@ const patchByID = (body, params) => {
   });
 };
 
+const popularVehicles = (params) => {
+  const queryGet = `SELECT COUNT(model_id) FROM history WHERE model_id = ${params.id}`;
+  return new Promise((resolve, reject) => {
+    db.query(queryGet, (err, result) => {
+      if (err) return reject(err);
+      const { "COUNT(model_id)": amount } = result[0];
+      console.log(amount);
+      const queryUpdate = `UPDATE vehicles SET popular_stats = ${amount} WHERE id = ${params.id}`;
+      db.query(queryUpdate, (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      });
+    });
+  });
+};
+
 module.exports = {
   addNewVehicles,
   getVehicles,
   deleteVehicles,
   patchByID,
+  popularVehicles,
 };

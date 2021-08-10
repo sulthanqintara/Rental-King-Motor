@@ -20,7 +20,7 @@ const login = (body) => {
           payload,
           process.env.SECRET_KEY,
           {
-            expiresIn: 60,
+            expiresIn: 3600,
             issuer: "Admin",
           },
           (err, token) => {
