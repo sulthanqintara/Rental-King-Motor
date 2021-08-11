@@ -25,6 +25,12 @@ const error = (res, status, errorMsg) => {
       HTTPResponse: "400 Bad Request",
     };
   }
+  if (status === 401) {
+    objectResponse = {
+      errorMsg,
+      HTTPResponse: "401 Unauthorized",
+    };
+  }
   res.status(status).json(objectResponse);
 };
 module.exports = {

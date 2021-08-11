@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 10, 2021 at 10:09 AM
+-- Generation Time: Aug 11, 2021 at 03:41 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 8.0.8
 
@@ -20,6 +20,25 @@ SET time_zone = "+00:00";
 --
 -- Database: `rental_king_motor`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `active_token`
+--
+
+CREATE TABLE `active_token` (
+  `id` int(11) NOT NULL,
+  `token` text NOT NULL,
+  `time_issued` int(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `active_token`
+--
+
+INSERT INTO `active_token` (`id`, `token`, `time_issued`) VALUES
+(7, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWljaGFlbCBNaWNoZWxsZSIsImlkIjoyLCJhdXRoTGV2ZWwiOjMsImlhdCI6MTYyODY4NzcwMSwiZXhwIjoxNjI4NjkxMzAxLCJpc3MiOiIkMmIkMTAkVlVTS2ZnU3BDeFA0aUhFN1V0MFIuLlZiZ085SFlibVM1VEwwdEE4UDVHYnV3b1luWW1udmkifQ.MsEDKTtoOr5WNqBCxnXfqmRiARa4vy1cCh8VBTUgv9I', 2147483647);
 
 -- --------------------------------------------------------
 
@@ -54,35 +73,12 @@ INSERT INTO `history` (`id`, `user_id`, `model_id`, `prepayment`, `returned_stat
 -- --------------------------------------------------------
 
 --
--- Table structure for table `popularity`
---
-
-CREATE TABLE `popularity` (
-  `id` int(11) NOT NULL,
-  `amount_rented` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `popularity`
---
-
-INSERT INTO `popularity` (`id`, `amount_rented`) VALUES
-(10, 0),
-(11, 0),
-(15, 0),
-(9, 1),
-(12, 1),
-(13, 1),
-(14, 2);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
+  `auth_level` int(1) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -96,11 +92,13 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `address`, `DOB`, `gender`, `profile_picture`) VALUES
-(1, 'Sulthan Qintara', 'sulthanqintara@gmail.com', '$2b$10$DKrepBhYwn4kKVytB9Fh7.AGD7jP/2W2o8.GA7itQpjhtxt7ZZGEK', 'Bandung', '1997-10-20', 1, 'http://localhost:8000/img/photo-1628537276154-746791.jpg'),
-(2, 'Michael Michelle', 'michael@yahoo.com', '$2b$10$Ssjp8ATn6Y6lrD3jTznQc.IQdT.3OnfETtMMAJo28Dws2F76RVzqq', 'Yogyakarta', '1990-01-20', 1, ''),
-(3, 'Adelaine Adelle', 'adelaine02@yahoo.com', '$2b$10$0eRtM1wkLMgkSI2kCK7V8OJFoaCr2wsF0h8gFroMyjYBdIAJq4Vbi', 'Bandung', '2000-05-05', 0, ''),
-(5, 'Johnson John', 'johnson.john@gmail.com', '$2b$10$XZg8XkLYK4M5sNZ1yVYASeSydhITecvkJQLDAGGvPGdesX9dodoRa', 'Surabaya', '1999-08-23', 1, '');
+INSERT INTO `users` (`id`, `auth_level`, `name`, `email`, `password`, `address`, `DOB`, `gender`, `profile_picture`) VALUES
+(1, 1, 'Sulthan Qintara', 'sulthanqintara@gmail.com', '$2b$10$DKrepBhYwn4kKVytB9Fh7.AGD7jP/2W2o8.GA7itQpjhtxt7ZZGEK', 'Bandung', '1997-10-20', 1, 'http://localhost:8000/img/photo-1628537276154-746791.jpg'),
+(2, 3, 'Michael Michelle', 'michael@yahoo.com', '$2b$10$Ssjp8ATn6Y6lrD3jTznQc.IQdT.3OnfETtMMAJo28Dws2F76RVzqq', 'Yogyakarta', '1990-01-20', 1, ''),
+(3, 3, 'Adelaine Adelle', 'adelaine02@yahoo.com', '$2b$10$0eRtM1wkLMgkSI2kCK7V8OJFoaCr2wsF0h8gFroMyjYBdIAJq4Vbi', 'Bandung', '2000-05-05', 0, ''),
+(5, 3, 'Johnson John', 'johnson.john@gmail.com', '$2b$10$XZg8XkLYK4M5sNZ1yVYASeSydhITecvkJQLDAGGvPGdesX9dodoRa', 'Surabaya', '1999-08-23', 1, ''),
+(6, 2, 'Alexandra Ashley', 'alexi_ash@gmailcom', '$2b$10$hikFya33BluuyDaKHxfs4u6z6fmHjoyjbh2wR9fSyPg.O3e9sBsly', 'Jakarta', '2001-01-05', 0, 'http://localhost:8000/img/photo-1628614032961-650064.jpg'),
+(7, 2, 'Linda Sandoval', 'lindythequeen@gmailcom', '$2b$10$Z3MRp0Qkh4r03T27vFfFtOdRhkVzKWPrknpmuW07ZIKQFNnywHaO6', 'Malang', '1995-03-15', 0, '');
 
 -- --------------------------------------------------------
 
@@ -112,24 +110,29 @@ CREATE TABLE `vehicles` (
   `id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   `model` varchar(255) NOT NULL,
+  `owner` int(11) NOT NULL,
   `location` varchar(255) NOT NULL,
   `price` int(11) NOT NULL,
-  `amount_available` int(11) NOT NULL
+  `amount_available` int(11) NOT NULL,
+  `popular_stats` int(11) NOT NULL,
+  `picture` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `vehicles`
 --
 
-INSERT INTO `vehicles` (`id`, `type_id`, `model`, `location`, `price`, `amount_available`) VALUES
-(9, 1, 'Van', 'Yogyakarta', 275000, 3),
-(10, 2, 'Vespa', 'Yogyakarta', 175000, 8),
-(11, 3, 'Sport Bike', 'Kalimantan', 80000, 15),
-(12, 1, 'Lambhorgini', 'South Jakarta', 750000, 3),
-(13, 3, 'Fixie Gray', 'Yogyakarta', 65000, 18),
-(14, 2, 'Honda KLX', 'Kalimantan', 95000, 7),
-(15, 3, 'Onthel', 'Malang', 60000, 10),
-(16, 1, 'Avanza', 'Bandung', 120000, 5);
+INSERT INTO `vehicles` (`id`, `type_id`, `model`, `owner`, `location`, `price`, `amount_available`, `popular_stats`, `picture`) VALUES
+(9, 1, 'Van', 7, 'Yogyakarta', 275000, 3, 1, ''),
+(10, 2, 'Vespa', 6, 'Yogyakarta', 175000, 8, 0, ''),
+(11, 3, 'Sport Bike', 7, 'Kalimantan', 80000, 15, 3, ''),
+(12, 1, 'Lambhorgini', 7, 'South Jakarta', 750000, 3, 1, ''),
+(13, 3, 'Fixie Gray', 6, 'Yogyakarta', 65000, 18, 1, ''),
+(14, 2, 'Honda KLX', 7, 'Kalimantan', 95000, 7, 2, ''),
+(15, 3, 'Onthel', 6, 'Malang', 60000, 10, 0, ''),
+(16, 1, 'Avanza', 7, 'Bandung', 120000, 5, 0, ''),
+(17, 2, 'Vespa', 7, 'Yogyakarta', 100000, 8, 0, 'http://localhost:8000/img/picture-1628618425136-622684.jpg, http://localhost:8000/img/picture-1628618425140-381419.png, '),
+(18, 2, 'Vespa', 6, 'Yogyakarta', 100000, 8, 0, '');
 
 -- --------------------------------------------------------
 
@@ -157,20 +160,18 @@ INSERT INTO `vehicle_types` (`id`, `name_idn`, `name_en`) VALUES
 --
 
 --
+-- Indexes for table `active_token`
+--
+ALTER TABLE `active_token`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `history`
 --
 ALTER TABLE `history`
   ADD PRIMARY KEY (`id`),
   ADD KEY `renter_id` (`user_id`),
   ADD KEY `model` (`model_id`);
-
---
--- Indexes for table `popularity`
---
-ALTER TABLE `popularity`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `amount_rented` (`amount_rented`),
-  ADD KEY `amount_rented_2` (`amount_rented`);
 
 --
 -- Indexes for table `users`
@@ -183,8 +184,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `vehicles`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `type_id` (`type_id`),
-  ADD KEY `model` (`model`);
+  ADD KEY `type_id` (`type_id`);
 
 --
 -- Indexes for table `vehicle_types`
@@ -197,6 +197,12 @@ ALTER TABLE `vehicle_types`
 --
 
 --
+-- AUTO_INCREMENT for table `active_token`
+--
+ALTER TABLE `active_token`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
@@ -206,13 +212,13 @@ ALTER TABLE `history`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `vehicles`
 --
 ALTER TABLE `vehicles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `vehicle_types`
@@ -232,16 +238,11 @@ ALTER TABLE `history`
   ADD CONSTRAINT `history_ibfk_2` FOREIGN KEY (`model_id`) REFERENCES `vehicles` (`id`);
 
 --
--- Constraints for table `popularity`
---
-ALTER TABLE `popularity`
-  ADD CONSTRAINT `popularity_ibfk_1` FOREIGN KEY (`id`) REFERENCES `vehicles` (`id`);
-
---
 -- Constraints for table `vehicles`
 --
 ALTER TABLE `vehicles`
-  ADD CONSTRAINT `vehicles_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `vehicle_types` (`id`);
+  ADD CONSTRAINT `vehicles_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `vehicle_types` (`id`),
+  ADD CONSTRAINT `vehicles_ibfk_2` FOREIGN KEY (`owner`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

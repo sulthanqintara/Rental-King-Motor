@@ -18,6 +18,9 @@ const getHistory = (query) => {
     let order_by = "h.id";
     let sort = "ASC";
     let filter = "h.id > 0";
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 3;
+    const offset = limit * (page - 1);
     if (query?.search) search = query.search;
     if (query?.keyword) keyword = query.keyword;
     if (query?.order_by && query?.sort) {
@@ -25,13 +28,20 @@ const getHistory = (query) => {
       sort = query.sort;
     }
     if (query?.filter) filter = query.filter;
-    let queryString = `SELECT h.id, u.name AS "renter", v.model AS "model", h.prepayment, h.returned_status, h.rent_start_date, h.rent_finish_date FROM history h JOIN users u ON h.user_id = u.id JOIN vehicles v ON h.model_id = v.id WHERE ${search} LIKE "%${keyword}%" AND ${filter} ORDER BY ${order_by} ${sort}`;
-
+    let queryString = `SELECT h.id, u.name AS "renter", v.model AS "model", h.prepayment, h.returned_status, h.rent_start_date, h.rent_finish_date FROM history h JOIN users u ON h.user_id = u.id JOIN vehicles v ON h.model_id = v.id WHERE ${search} LIKE "%${keyword}%" AND ${filter} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    let queryCount = `SELECT COUNT(*) AS "total_vehicles" FROM vehicles`;
     db.query(queryString, (error, result) => {
-      if (error) {
-        return reject(error);
-      }
-      return resolve(result);
+      if (error) return reject(error);
+      if (!result.length) return reject(404);
+      db.query(queryCount, (err, resultTotal) => {
+        if (err) return reject(err);
+        return resolve({
+          data: result,
+          totalCount: resultTotal,
+          currentPage: page,
+          limit,
+        });
+      });
     });
   });
 };
