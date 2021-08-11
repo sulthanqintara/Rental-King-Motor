@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 11, 2021 at 03:41 PM
+-- Generation Time: Aug 11, 2021 at 07:29 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 8.0.8
 
@@ -32,13 +32,6 @@ CREATE TABLE `active_token` (
   `token` text NOT NULL,
   `time_issued` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `active_token`
---
-
-INSERT INTO `active_token` (`id`, `token`, `time_issued`) VALUES
-(7, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWljaGFlbCBNaWNoZWxsZSIsImlkIjoyLCJhdXRoTGV2ZWwiOjMsImlhdCI6MTYyODY4NzcwMSwiZXhwIjoxNjI4NjkxMzAxLCJpc3MiOiIkMmIkMTAkVlVTS2ZnU3BDeFA0aUhFN1V0MFIuLlZiZ085SFlibVM1VEwwdEE4UDVHYnV3b1luWW1udmkifQ.MsEDKTtoOr5WNqBCxnXfqmRiARa4vy1cCh8VBTUgv9I', 2147483647);
 
 -- --------------------------------------------------------
 
@@ -93,7 +86,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `auth_level`, `name`, `email`, `password`, `address`, `DOB`, `gender`, `profile_picture`) VALUES
-(1, 1, 'Sulthan Qintara', 'sulthanqintara@gmail.com', '$2b$10$DKrepBhYwn4kKVytB9Fh7.AGD7jP/2W2o8.GA7itQpjhtxt7ZZGEK', 'Bandung', '1997-10-20', 1, 'http://localhost:8000/img/photo-1628537276154-746791.jpg'),
+(1, 1, 'Sulthan Qintara', 'sulthanqintara@gmail.com', '$2b$10$psqo7biGnHTIcwT7MGOazOsGg8I0rayYrAIVgmKhXPVKojyjc.QTK', 'Bandung', '1997-10-20', 1, 'http://localhost:8000/img/photo-1628537276154-746791.jpg'),
 (2, 3, 'Michael Michelle', 'michael@yahoo.com', '$2b$10$Ssjp8ATn6Y6lrD3jTznQc.IQdT.3OnfETtMMAJo28Dws2F76RVzqq', 'Yogyakarta', '1990-01-20', 1, ''),
 (3, 3, 'Adelaine Adelle', 'adelaine02@yahoo.com', '$2b$10$0eRtM1wkLMgkSI2kCK7V8OJFoaCr2wsF0h8gFroMyjYBdIAJq4Vbi', 'Bandung', '2000-05-05', 0, ''),
 (5, 3, 'Johnson John', 'johnson.john@gmail.com', '$2b$10$XZg8XkLYK4M5sNZ1yVYASeSydhITecvkJQLDAGGvPGdesX9dodoRa', 'Surabaya', '1999-08-23', 1, ''),
@@ -200,7 +193,7 @@ ALTER TABLE `vehicle_types`
 -- AUTO_INCREMENT for table `active_token`
 --
 ALTER TABLE `active_token`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `history`
