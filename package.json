@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "serve": "pm2 start index.js --name=rental-king-motor-beta",
     "lint": "eslint ./"
   },
   "repository": {
