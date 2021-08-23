@@ -22,7 +22,7 @@ const addNewVehicles = (req) => {
 
 const getVehicles = (query) => {
   return new Promise((resolve, reject) => {
-    let search = "v.model";
+    const search = query?.search ? query.search : "v.model";
     let keyword = "";
     let order_by = "v.id";
     let sort = "ASC";
@@ -30,7 +30,6 @@ const getVehicles = (query) => {
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 3;
     const offset = limit * (page - 1);
-    if (query?.search) search = query.search;
     if (query?.keyword) keyword = query.keyword;
     if (query?.order_by && query?.sort) {
       order_by = query.order_by;

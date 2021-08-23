@@ -6,7 +6,10 @@ const updatePassword = (req, res) => {
   userModel
     .updatePassword(body, params.id)
     .then((result) => responseHelper.success(res, 200, result))
-    .catch((err) => responseHelper.error(res, 500, err));
+    .catch((err) => {
+      if ((err = "Password tidak sama")) responseHelper.error(res, 401, err);
+      else responseHelper.error(res, 500, err);
+    });
 };
 
 const editUser = (req, res) => {

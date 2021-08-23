@@ -6,7 +6,7 @@ const authMiddleware = require("../middlewares/auth");
 const fileValidation = require("../middlewares/uploadValidation");
 
 // localhost:8000/vehicles
-vehiclesRouter.get("/", authMiddleware.checkToken, vehicleHandler.getVehicles);
+vehiclesRouter.get("/", vehicleHandler.getVehicles);
 
 vehiclesRouter.post(
   "/",

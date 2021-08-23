@@ -46,7 +46,7 @@ const updatePassword = (body, id) => {
           };
           db.query(updateQuery, [newPassword, id], (err, result) => {
             if (err) return reject(err);
-            return resolve(result);
+            return resolve("Password sudah diganti");
           });
         });
       });

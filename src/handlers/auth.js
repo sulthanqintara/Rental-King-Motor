@@ -2,7 +2,7 @@ const userModel = require("../models/users");
 const responseHelper = require("../helper/response");
 const authModel = require("../models/auth");
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { body } = req;
   authModel
     .login(body)

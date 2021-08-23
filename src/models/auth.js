@@ -19,70 +19,22 @@ const login = (body) => {
           id: result[0].id,
           authLevel,
         };
-        if (authLevel === 1) {
-          bcrypt.hash(process.env.ISSUER_ADMIN, 10, (err, hash) => {
+        jwt.sign(
+          payload,
+          process.env.SECRET_KEY,
+          {
+            expiresIn: 3600,
+            issuer: "RKM DB",
+          },
+          (err, token) => {
             if (err) return reject(err);
-            console.log(hash);
-            jwt.sign(
-              payload,
-              process.env.SECRET_KEY,
-              {
-                expiresIn: 3600,
-                issuer: hash,
-              },
-              (err, token) => {
-                if (err) return reject(err);
-                const queryPostToken = `INSERT INTO active_token (token, time_issued) VALUES ("${token}",${Date.now()})`;
-                db.query(queryPostToken, (err, result) => {
-                  if (err) return reject(err);
-                  return resolve(token);
-                });
-              }
-            );
-          });
-        }
-        if (authLevel === 2) {
-          bcrypt.hash(process.env.ISSUER_SELLER, 10, (err, hash) => {
-            if (err) return reject(err);
-            jwt.sign(
-              payload,
-              process.env.SECRET_KEY,
-              {
-                expiresIn: 3600,
-                issuer: hash,
-              },
-              (err, token) => {
-                if (err) return reject(err);
-                const queryPostToken = `INSERT INTO active_token (token, time_issued) VALUES ("${token}",${Date.now()})`;
-                db.query(queryPostToken, (err, result) => {
-                  if (err) return reject(err);
-                  return resolve(token);
-                });
-              }
-            );
-          });
-        }
-        if (authLevel === 3) {
-          bcrypt.hash(process.env.ISSUER_USER, 10, (err, hash) => {
-            if (err) return reject(err);
-            jwt.sign(
-              payload,
-              process.env.SECRET_KEY,
-              {
-                expiresIn: 3600,
-                issuer: hash,
-              },
-              (err, token) => {
-                if (err) return reject(err);
-                const queryPostToken = `INSERT INTO active_token (token, time_issued) VALUES ("${token}",${Date.now()})`;
-                db.query(queryPostToken, (err, result) => {
-                  if (err) return reject(err);
-                  return resolve(token);
-                });
-              }
-            );
-          });
-        }
+            const queryPostToken = `INSERT INTO active_token (token, time_issued) VALUES ("${token}",${Date.now()})`;
+            db.query(queryPostToken, (err, result) => {
+              if (err) return reject(err);
+              return resolve(token);
+            });
+          }
+        );
       });
     });
   });
