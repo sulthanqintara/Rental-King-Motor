@@ -12,17 +12,23 @@ const createNewUser = (body, file, hostname) => {
       };
     }
     const query = "INSERT INTO users SET ? , ?";
-    bcrypt.genSalt(10, (err, salt) => {
+    const { email } = body;
+    const getQuery = "SELECT * FROM users WHERE email = ?";
+    db.query(getQuery, email, (err, result) => {
       if (err) return reject(err);
-      bcrypt.hash(body.password, salt, (err, hash) => {
+      if (result.length) return reject("E-mail sudah terdaftar!");
+      bcrypt.genSalt(10, (err, salt) => {
         if (err) return reject(err);
-        const userData = {
-          ...body,
-          password: hash,
-        };
-        db.query(query, [userData, input], (err, result) => {
+        bcrypt.hash(body.password, salt, (err, hash) => {
           if (err) return reject(err);
-          return resolve(result);
+          const userData = {
+            ...body,
+            password: hash,
+          };
+          db.query(query, [userData, input], (err, result) => {
+            if (err) return reject(err);
+            return resolve(result);
+          });
         });
       });
     });

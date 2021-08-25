@@ -9,10 +9,10 @@ const login = (req, res, next) => {
     .then((result) => responseHelper.success(res, 200, { token: result }))
     .catch((error) => {
       if (error === "E-mail tidak terdaftar")
-        responseHelper.error(res, 404, error);
-      if (error === "Password Salah") responseHelper.error(res, 401, error);
-      if (error === "No Authorization!") responseHelper.error(res, 401, error);
-      else responseHelper.error(res, 500, error);
+        return responseHelper.error(res, 404, error);
+      if (error === "Password Salah")
+        return responseHelper.error(res, 401, error);
+      else return responseHelper.error(res, 500, error);
     });
 };
 
@@ -21,7 +21,11 @@ const register = (req, res) => {
   userModel
     .createNewUser(body, file, hostname)
     .then((result) => responseHelper.success(res, 201, result))
-    .catch((err) => responseHelper.error(res, 500, err.message));
+    .catch((err) => {
+      if (err === "E-mail sudah terdaftar!")
+        return responseHelper.error(res, 404, err);
+      else return responseHelper.error(res, 500, err);
+    });
 };
 
 const logout = (req, res) => {
