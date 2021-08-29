@@ -4,9 +4,15 @@ const addNewVehicles = (req) => {
   return new Promise((resolve, reject) => {
     const { body, files, hostname } = req;
     let picture = "";
-    if (files) {
+    if (files.length > 1) {
       for (let i = 0; i < files.length; i++) {
-        picture += `http://${hostname}:8000/img/${files[i].filename}, `;
+        picture += `http://${hostname}:8000/img/${files[i].filename},`;
+      }
+    } else {
+      {
+        for (let i = 0; i < files.length; i++) {
+          picture += `http://${hostname}:8000/img/${files[i].filename}`;
+        }
       }
     }
     let input = {
@@ -22,21 +28,22 @@ const addNewVehicles = (req) => {
 
 const getVehicles = (query) => {
   return new Promise((resolve, reject) => {
-    const search = query?.search ? query.search : "v.model";
-    let keyword = "";
+    const idVehicle = query?.id ? "=" + query.id : "> 1";
+    let keyword = query?.keyword ? query.keyword : "";
     let order_by = "v.id";
     let sort = "ASC";
-    let filter = "v.id > 0";
+    let filter = "> 0";
     const page = Number(query.page) || 1;
-    const limit = Number(query.limit) || 3;
+    const limit = Number(query.limit) || 4;
     const offset = limit * (page - 1);
-    if (query?.keyword) keyword = query.keyword;
     if (query?.order_by && query?.sort) {
       order_by = query.order_by;
       sort = query.sort;
     }
-    if (query?.filter) filter = query.filter;
-    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE ${search} LIKE "%${keyword}%" AND ${filter} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    console.log(query);
+    if (query?.filter_by_type) filter = `= ${query.filter_by_type}`;
+    console.log(filter);
+    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
     let queryCount = `SELECT COUNT(*) AS "total_vehicles" FROM vehicles`;
     db.query(queryString, (error, result) => {
       if (error) return reject(error);
@@ -70,15 +77,17 @@ const patchByID = (req) => {
   let picture = "";
   if (files) {
     for (let i = 0; i < files.length; i++) {
-      picture += `http://${hostname}:8000/img/${files[i].filename}, `;
+      picture += `http://${hostname}:8000/img/${files[i].filename},`;
     }
   }
   let input = {
     picture,
   };
+  console.log(body);
+
   return new Promise((resolve, reject) => {
     const queryString = "UPDATE vehicles SET ? , ? WHERE id = ?";
-    db.query(queryString, [body, input, id], (err, result) => {
+    db.query(queryString, [input, body, id], (err, result) => {
       if (err) return reject(err);
       return resolve(result);
     });
