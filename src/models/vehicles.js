@@ -30,20 +30,14 @@ const getVehicles = (query) => {
   return new Promise((resolve, reject) => {
     const idVehicle = query?.id ? "=" + query.id : "> 1";
     let keyword = query?.keyword ? query.keyword : "";
-    let order_by = "v.id";
-    let sort = "ASC";
+    let order_by = query?.order_by ? query?.order_by : "v.id";
+    let sort = query?.sort ? query?.sort : "ASC";
     let filter = "> 0";
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 4;
     const offset = limit * (page - 1);
-    if (query?.order_by && query?.sort) {
-      order_by = query.order_by;
-      sort = query.sort;
-    }
-    console.log(query);
     if (query?.filter_by_type) filter = `= ${query.filter_by_type}`;
-    console.log(filter);
-    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture, v.popular_stats FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
     let queryCount = `SELECT COUNT(*) AS "total_vehicles" FROM vehicles`;
     db.query(queryString, (error, result) => {
       if (error) return reject(error);
