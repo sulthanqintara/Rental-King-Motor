@@ -5,15 +5,22 @@ const jwt = require("jsonwebtoken");
 const login = (body) => {
   return new Promise((resolve, reject) => {
     const { email, password } = body;
-    const getPassQuery =
-      "SELECT id, name, password, auth_level FROM users where email = ?";
+    const getPassQuery = "SELECT * FROM users where email = ?";
     db.query(getPassQuery, email, (err, result) => {
       if (err) return reject(err);
-      if (!result.length) return reject("E-mail tidak terdaftar");
+      if (!result.length) return reject(401);
       const authLevel = Number(result[0].auth_level);
       bcrypt.compare(password, result[0].password, (err, compared) => {
         if (err) return reject(err);
-        if (!compared) return reject("Password Salah");
+        if (!compared) return reject(401);
+        const userInfo = {
+          userName: result[0].name,
+          email: result[0].email,
+          address: result[0].address,
+          dob: result[0].DOB,
+          gender: result[0].gender,
+          profilePic: result[0].profile_picture,
+        };
         const payload = {
           name: result[0].name,
           id: result[0].id,
@@ -31,7 +38,7 @@ const login = (body) => {
             const queryPostToken = `INSERT INTO active_token (token, time_issued) VALUES ("${token}",${Date.now()})`;
             db.query(queryPostToken, (err, result) => {
               if (err) return reject(err);
-              return resolve(token);
+              return resolve({ token, userInfo: userInfo });
             });
           }
         );

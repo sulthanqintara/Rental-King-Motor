@@ -6,12 +6,10 @@ const login = (req, res, next) => {
   const { body } = req;
   authModel
     .login(body)
-    .then((result) => responseHelper.success(res, 200, { token: result }))
+    .then((result) => responseHelper.success(res, 200, result))
     .catch((error) => {
-      if (error === "E-mail tidak terdaftar")
-        return responseHelper.error(res, 404, error);
-      if (error === "Password Salah")
-        return responseHelper.error(res, 401, error);
+      if (error === 401)
+        return responseHelper.error(res, 401, "Invalid Email or Password");
       else return responseHelper.error(res, 500, error);
     });
 };
