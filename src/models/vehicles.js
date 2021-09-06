@@ -18,8 +18,17 @@ const addNewVehicles = (req) => {
     let input = {
       picture,
     };
-    const queryString = "INSERT INTO vehicles SET ? , ?";
-    db.query(queryString, [body, input], (err, result) => {
+    const inputWithoutPic = { ...body };
+    const inputWithPic = { ...body, ...input };
+    let newInput = {};
+    if (!picture) {
+      newInput = inputWithoutPic;
+    } else {
+      newInput = inputWithPic;
+    }
+
+    const queryString = "INSERT INTO vehicles SET ?";
+    db.query(queryString, newInput, (err, result) => {
       if (err) return reject(err);
       return resolve(result);
     });
@@ -32,12 +41,13 @@ const getVehicles = (query) => {
     let keyword = query?.keyword ? query.keyword : "";
     let order_by = query?.order_by ? query?.order_by : "v.id";
     let sort = query?.sort ? query?.sort : "ASC";
+    let location = query?.location ? query?.location : "";
     let filter = "> 0";
     const page = Number(query.page) || 1;
-    const limit = Number(query.limit) || 4;
+    const limit = Number(query.limit) || 20;
     const offset = limit * (page - 1);
     if (query?.filter_by_type) filter = `= ${query.filter_by_type}`;
-    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture, v.popular_stats FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture, v.popular_stats FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} AND v.location LIKE "%${location}%" ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
     let queryCount = `SELECT COUNT(*) AS "total_vehicles" FROM vehicles`;
     db.query(queryString, (error, result) => {
       if (error) return reject(error);
@@ -78,10 +88,18 @@ const patchByID = (req) => {
     picture,
   };
   console.log(body);
+  const inputWithoutPic = { ...body };
+  const inputWithPic = { ...body, ...input };
+  let newInput = {};
+  if (!picture) {
+    newInput = inputWithoutPic;
+  } else {
+    newInput = inputWithPic;
+  }
 
   return new Promise((resolve, reject) => {
-    const queryString = "UPDATE vehicles SET ? , ? WHERE id = ?";
-    db.query(queryString, [input, body, id], (err, result) => {
+    const queryString = "UPDATE vehicles SET ? WHERE id = ?";
+    db.query(queryString, [newInput, id], (err, result) => {
       if (err) return reject(err);
       return resolve(result);
     });

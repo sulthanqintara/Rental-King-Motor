@@ -13,7 +13,7 @@ userRouter.patch(
 userRouter.patch(
   "/:id",
   authMiddleware.checkToken,
-  upload.uploadImage.single("photo"),
+  upload.uploadImage.single("profile_picture"),
   validation,
   userHandler.editUser
 );

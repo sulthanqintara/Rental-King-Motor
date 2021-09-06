@@ -75,10 +75,11 @@ const editUser = (file, id, body, hostname) => {
       }
       if (!file)
         input = {
-          profile_picture: dbUrl[0].profile_picture,
+          profile_picture: dbUrl[0]?.profile_picture,
         };
-      const updateQuery = "UPDATE users SET ? , ? WHERE id = ?";
-      db.query(updateQuery, [input, body, id], (err, result) => {
+      const newBody = { ...body, ...input };
+      const updateQuery = "UPDATE users SET ? WHERE id = ?";
+      db.query(updateQuery, [newBody, id], (err, result) => {
         if (err) return reject(err);
         return resolve(result);
       });

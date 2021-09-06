@@ -7,7 +7,7 @@ const authMiddleware = require("../middlewares/auth");
 authRouter.post("/login", authHandler.login);
 authRouter.post(
   "/register",
-  upload.uploadImage.single("photo"),
+  upload.uploadImage.single("profile_picture"),
   fileValidation,
   authHandler.register
 );

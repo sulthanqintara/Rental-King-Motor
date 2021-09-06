@@ -14,7 +14,10 @@ const login = (body) => {
         if (err) return reject(err);
         if (!compared) return reject(401);
         const userInfo = {
+          user_id: result[0].id,
           userName: result[0].name,
+          authLevel,
+          phone: result[0].phone_number,
           email: result[0].email,
           address: result[0].address,
           dob: result[0].DOB,
