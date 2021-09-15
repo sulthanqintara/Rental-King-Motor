@@ -9,8 +9,8 @@ const login = (req, res, next) => {
     .then((result) => responseHelper.success(res, 200, result))
     .catch((error) => {
       if (error === 401)
-        return responseHelper.error(res, 401, "Invalid Email or Password");
-      else return responseHelper.error(res, 500, error);
+        responseHelper.error(res, 401, "Invalid Email or Password");
+      else responseHelper.error(res, 500, error);
     });
 };
 
@@ -21,7 +21,7 @@ const register = (req, res) => {
     .then((result) => responseHelper.success(res, 201, result))
     .catch((err) => {
       if (err === "E-mail sudah terdaftar!")
-        return responseHelper.error(res, 404, err);
+        return responseHelper.error(res, 409, err);
       else return responseHelper.error(res, 500, err);
     });
 };

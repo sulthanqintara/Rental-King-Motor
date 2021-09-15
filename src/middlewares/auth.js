@@ -13,26 +13,25 @@ const checkToken = (req, res, next) => {
       const queryDelete = `DELETE FROM active_token WHERE token = "${token}"`;
       db.query(queryDelete, (err, result) => {
         if (err) return new Error(responseHelper.error(res, 500, err));
-        return new Error(
-          responseHelper.error(
+        else
+          return responseHelper.error(
             res,
             403,
-            "Token Expired, Silahkan Login Kembali!"
-          )
-        );
+            "Token Expired, Silahkan Login Kembali"
+          );
+      });
+    } else {
+      const query = `SELECT token FROM active_token WHERE token = "${token}"`;
+      db.query(query, (err, result) => {
+        if (err) return new Error(responseHelper.error(res, 500, err));
+        if (!result.length)
+          return new Error(
+            responseHelper.error(res, 401, "Silahkan Login Kembali")
+          );
+        req.token = token;
+        next();
       });
     }
-  });
-  const query = `SELECT token FROM active_token WHERE token = "${token}"`;
-  db.query(query, (err, result) => {
-    if (err) return new Error(responseHelper.error(res, 500, err));
-    if (!result.length)
-      return new Error(
-        responseHelper.error(res, 401, "Silahkan Login Kembali")
-      );
-
-    req.token = token;
-    next();
   });
 };
 
