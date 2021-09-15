@@ -3,15 +3,11 @@ const db = require("../database/mysql");
 
 const createNewUser = (body, file, hostname) => {
   return new Promise((resolve, reject) => {
-    let input = {
-      profile_picture: "",
-    };
+    let input = "";
+
     if (file) {
-      input = {
-        profile_picture: `http://${hostname}:8000/img/${file.filename}`,
-      };
+      input = `http://${hostname}:8000/img/${file.filename}`;
     }
-    const query = "INSERT INTO users SET ? , ?";
     const { email } = body;
     const getQuery = "SELECT * FROM users WHERE email = ?";
     db.query(getQuery, email, (err, result) => {
@@ -21,11 +17,19 @@ const createNewUser = (body, file, hostname) => {
         if (err) return reject(err);
         bcrypt.hash(body.password, salt, (err, hash) => {
           if (err) return reject(err);
-          const userData = {
-            ...body,
-            password: hash,
-          };
-          db.query(query, [userData, input], (err, result) => {
+          let userData = {};
+          input !== ""
+            ? (userData = {
+                ...body,
+                password: hash,
+                input,
+              })
+            : (userData = {
+                ...body,
+                password: hash,
+              });
+          const query = "INSERT INTO users SET ?";
+          db.query(query, userData, (err, result) => {
             if (err) return reject(err);
             return resolve(result);
           });
@@ -86,6 +90,7 @@ const editUser = (file, id, body, hostname) => {
     });
   });
 };
+
 module.exports = {
   createNewUser,
   updatePassword,
