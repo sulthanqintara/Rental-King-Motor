@@ -9,8 +9,8 @@ const success = (res, status, result, info) => {
 
 const error = (res, status, errorMsg) => {
   let objectResponse = {
-    status,
     errorMsg,
+    status,
   };
   if (errorMsg === 404 || status === 404) {
     objectResponse = {

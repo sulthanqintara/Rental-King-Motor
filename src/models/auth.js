@@ -33,7 +33,7 @@ const login = (body) => {
           payload,
           process.env.SECRET_KEY,
           {
-            expiresIn: 3600,
+            expiresIn: 86400000,
             issuer: "RKM DB",
           },
           (err, token) => {
