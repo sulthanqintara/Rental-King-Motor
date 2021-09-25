@@ -43,11 +43,11 @@ const getVehicles = (query) => {
     let sort = query?.sort ? query?.sort : "ASC";
     let location = query?.location ? query?.location : "";
     let filter = "> 0";
+    if (query?.filter_by_type) filter = `= ${query.filter_by_type}`;
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 20;
     const offset = limit * (page - 1);
-    if (query?.filter_by_type) filter = `= ${query.filter_by_type}`;
-    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture, v.popular_stats FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} AND v.location LIKE "%${location}%" ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture, v.popular_stats, v.owner FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} AND v.location LIKE "%${location}%" ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
     let queryCount = `SELECT COUNT(*) AS "total_vehicles" FROM vehicles`;
     db.query(queryString, (error, result) => {
       if (error) return reject(error);

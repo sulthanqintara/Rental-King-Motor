@@ -85,7 +85,22 @@ const editUser = (file, id, body, hostname) => {
       const updateQuery = "UPDATE users SET ? WHERE id = ?";
       db.query(updateQuery, [newBody, id], (err, result) => {
         if (err) return reject(err);
-        return resolve(result);
+        const getUserQuery = "SELECT * FROM users WHERE id = ?";
+        db.query(getUserQuery, id, (err, userData) => {
+          if (err) return reject(err);
+          const userInfo = {
+            user_id: userData[0].id,
+            userName: userData[0].name,
+            authLevel: Number(userData[0].auth_level),
+            phone: userData[0].phone_number,
+            email: userData[0].email,
+            address: userData[0].address,
+            dob: userData[0].DOB,
+            gender: userData[0].gender,
+            profilePic: userData[0].profile_picture,
+          };
+          return resolve(userInfo);
+        });
       });
     });
   });
