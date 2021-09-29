@@ -6,7 +6,7 @@ const createNewUser = (body, file, hostname) => {
     let input = "";
 
     if (file) {
-      input = `http://${hostname}:8000/img/${file.filename}`;
+      input = `/img/${file.filename}`;
     }
     const { email } = body;
     const getQuery = "SELECT * FROM users WHERE email = ?";
@@ -71,10 +71,9 @@ const editUser = (file, id, body, hostname) => {
       let input;
       if (err) return reject(err);
       if (file) {
-        const host = `http://${hostname}:8000`;
         const imageUrl = `/img/${file.filename}`;
         input = {
-          profile_picture: host + imageUrl,
+          profile_picture: imageUrl,
         };
       }
       if (!file)

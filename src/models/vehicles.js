@@ -6,12 +6,12 @@ const addNewVehicles = (req) => {
     let picture = "";
     if (files.length > 1) {
       for (let i = 0; i < files.length; i++) {
-        picture += `http://${hostname}:8000/img/${files[i].filename},`;
+        picture += `/img/${files[i].filename},`;
       }
     } else {
       {
         for (let i = 0; i < files.length; i++) {
-          picture += `http://${hostname}:8000/img/${files[i].filename}`;
+          picture += `/img/${files[i].filename}`;
         }
       }
     }
@@ -81,7 +81,7 @@ const patchByID = (req) => {
   let picture = "";
   if (files) {
     for (let i = 0; i < files.length; i++) {
-      picture += `http://${hostname}:8000/img/${files[i].filename},`;
+      picture += `/img/${files[i].filename},`;
     }
   }
   let input = {

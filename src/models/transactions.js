@@ -8,7 +8,6 @@ const postNewTransaction = (body, query) => {
       .toString("hex")
       .split("", 7)
       .join("");
-    console.log(randomString.toUpperCase());
     const data = { ...body, booking_code: `#${randomString.toUpperCase()}` };
     const queryString = "INSERT INTO transactions SET ?";
     db.query(queryString, data, (err, result) => {
@@ -45,7 +44,7 @@ const getTransactions = (query) => {
     const limit = Number(query.limit) || 10;
     const offset = limit * (page - 1);
 
-    let queryString = `SELECT t.id, u.id AS "renter_id", u.name AS "renter", v.owner AS "owner_id", v.model AS "model", v.id AS "model_id", t.prepayment, t.user_paid_status, t.seller_paid_status, t.booking_code, t.rent_start_date, t.rent_finish_date, t.returned_status FROM transactions t JOIN users u ON t.user_id = u.id JOIN vehicles v ON t.model_id = v.id WHERE user_id ${user_id} AND v.owner ${ownerId} AND v.model LIKE "%${keyword}%" AND v.type_id ${filterByModel} AND t.rent_start_date >= ? ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    let queryString = `SELECT t.id, u.id AS "renter_id", u.name AS "renter", v.owner AS "owner_id", v.model AS "model", v.id AS "model_id", t.prepayment, t.id_card, t.amount_rented, t.user_paid_status, t.seller_paid_status, t.booking_code, t.rent_start_date, t.rent_finish_date, t.returned_status, t.time_posted, v.picture FROM transactions t JOIN users u ON t.user_id = u.id JOIN vehicles v ON t.model_id = v.id WHERE user_id ${user_id} AND v.owner ${ownerId} AND v.model LIKE "%${keyword}%" AND v.type_id ${filterByModel} AND t.rent_start_date >= ? ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
 
     db.query(queryString, filterByDate, (error, result) => {
       if (error) return reject(error);
