@@ -18,7 +18,6 @@ const postNewTransaction = (body, query) => {
 };
 const patchNewTransaction = (body) => {
   return new Promise((resolve, reject) => {
-    console.log(body);
     const queryString = "UPDATE transactions SET ? WHERE id = ?";
     db.query(queryString, [body, body.id], (err, result) => {
       if (err) return reject(err);
