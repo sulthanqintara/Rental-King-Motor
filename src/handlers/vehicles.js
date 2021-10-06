@@ -24,7 +24,7 @@ const getVehicles = (req, res) => {
           prevPage,
           nextPage,
         };
-        responseHelper.success(res, 201, info);
+        responseHelper.success(res, 200, info);
       }
     )
     .catch((err) => responseHelper.error(res, 500, err));

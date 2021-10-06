@@ -3,16 +3,13 @@ const db = require("../database/mysql");
 const addNewVehicles = (req) => {
   return new Promise((resolve, reject) => {
     const { body, files, hostname } = req;
-    let picture = "/img/imagePlaceholder.png";
-    if (files.length > 1) {
+    let picture = "";
+    if (files.length === 0) {
+      picture = "/img/imagePlaceholder.png";
+    }
+    if (files.length > 0) {
       for (let i = 0; i < files.length; i++) {
-        picture += `/img/${files[i].filename},`;
-      }
-    } else {
-      {
-        for (let i = 0; i < files.length; i++) {
-          picture += `/img/${files[i].filename}`;
-        }
+        picture += `/img/${files[i].filename}${files.length > 1 ? "," : ""}`;
       }
     }
     let input = {
@@ -73,8 +70,8 @@ const getVehicles = (query) => {
           ((urlPrevPage = urlPrevPage + `filter_by_type=${filter}&`),
           (urlNextPage = urlNextPage + `filter_by_type=${filter}&`));
         query.min_price &&
-          ((urlPrevPage = urlPrevPage + `min_price=${filter}&`),
-          (urlNextPage = urlNextPage + `min_price=${filter}&`));
+          ((urlPrevPage = urlPrevPage + `min_price=${minPrice}&`),
+          (urlNextPage = urlNextPage + `min_price=${minPrice}&`));
         query.max_price &&
           ((urlPrevPage = urlPrevPage + `max_price=${maxPrice}&`),
           (urlNextPage = urlNextPage + `max_price=${maxPrice}&`));
