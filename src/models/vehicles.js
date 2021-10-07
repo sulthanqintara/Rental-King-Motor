@@ -67,8 +67,8 @@ const getVehicles = (query) => {
           ((urlPrevPage = urlPrevPage + `location=${location}&`),
           (urlNextPage = urlNextPage + `location=${location}&`));
         query.filter_by_type &&
-          ((urlPrevPage = urlPrevPage + `filter_by_type=${filter}&`),
-          (urlNextPage = urlNextPage + `filter_by_type=${filter}&`));
+          ((urlPrevPage = urlPrevPage + `filter_by_type${filter}&`),
+          (urlNextPage = urlNextPage + `filter_by_type${filter}&`));
         query.min_price &&
           ((urlPrevPage = urlPrevPage + `min_price=${minPrice}&`),
           (urlNextPage = urlNextPage + `min_price=${minPrice}&`));

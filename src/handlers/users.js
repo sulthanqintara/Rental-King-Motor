@@ -24,7 +24,7 @@ const forgotPassword = (req, res) => {
   const { body } = req;
   userModel
     .forgotPassword(body)
-    .then((result) => responseHelper.success(res, 200, result))
+    .then((result) => responseHelper.success(res, 201, result))
     .catch((err) => {
       if (err === 404) {
         return responseHelper.error(res, 404, "Email not found");

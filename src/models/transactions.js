@@ -10,6 +10,7 @@ const postNewTransaction = (body, query) => {
       .join("");
     const data = { ...body, booking_code: `#${randomString.toUpperCase()}` };
     const queryString = "INSERT INTO transactions SET ?";
+    console.log(body.amount_rented);
     db.query(queryString, data, (err, result) => {
       if (err) return reject(err);
       return resolve(result.insertId);

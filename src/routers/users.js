@@ -18,7 +18,7 @@ userRouter.patch(
   userHandler.editUser
 );
 userRouter.post("/forgot_password", userHandler.forgotPassword);
-userRouter.get("/forgot_password/check", userHandler.checkForgotPassword);
+userRouter.post("/forgot_password/check", userHandler.checkForgotPassword);
 userRouter.patch("/forgot_password/change", userHandler.changePassword);
 
 module.exports = userRouter;
