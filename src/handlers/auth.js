@@ -40,9 +40,25 @@ const clear = (req, res) => {
     .catch((err) => responseHelper.error(res, 500, err));
 };
 
+const checkToken = (req, res) => {
+  authModel
+    .checkToken(req)
+    .then((result) => responseHelper.success(res, 200, result))
+    .catch((err) => {
+      if (err === "Anda belum login!")
+        return responseHelper.error(res, 401, err);
+      if (err === "Token Expired, Silahkan Login Kembali")
+        return responseHelper.error(res, 403, err);
+      if (err === "Silahkan Login Kembali")
+        return responseHelper.error(res, 401, err);
+      return responseHelper.error(res, 500, err);
+    });
+};
+
 module.exports = {
   login,
   register,
   logout,
   clear,
+  checkToken,
 };

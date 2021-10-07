@@ -20,4 +20,6 @@ authRouter.delete(
   authHandler.clear
 );
 
+authRouter.get("/check", authHandler.checkToken);
+
 module.exports = authRouter;
