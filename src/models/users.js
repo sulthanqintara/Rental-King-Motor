@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const db = require("../database/mysql");
+const { v4: uuidv4 } = require("uuid");
 
 const createNewUser = (body, file, hostname) => {
   return new Promise((resolve, reject) => {
@@ -22,10 +23,12 @@ const createNewUser = (body, file, hostname) => {
             ? (userData = {
                 ...body,
                 password: hash,
+                uuid: uuidv4(),
                 input,
               })
             : (userData = {
                 ...body,
+                uuid: uuidv4(),
                 password: hash,
               });
           const query = "INSERT INTO users SET ?";

@@ -72,7 +72,6 @@ const clear = (req) => {
 };
 
 const checkToken = (req) => {
-  console.log("test");
   return new Promise((resolve, reject) => {
     const bearerToken = req.header("x-access-token");
     if (!bearerToken) return reject("Anda belum login!");
