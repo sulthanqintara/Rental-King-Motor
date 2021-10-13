@@ -26,10 +26,9 @@ const patchNewTransaction = (body) => {
         "SELECT u.id, v.model FROM transactions t JOIN vehicles v ON t.model_id = v.id JOIN users u ON v.owner = u.id WHERE t.id = ?";
       db.query(queryCheckOwner, body.id, (err, ownerId) => {
         if (err) return reject(err);
-        console.log(`transaction_${ownerId[0].id}`);
         if (body.seller_paid_status) {
           const queryCheckRenter =
-            "SELECT user_id FROM transaction WHERE id = ?";
+            "SELECT user_id FROM transactions WHERE id = ?";
           db.query(queryCheckRenter, body.id, (err, renterId) => {
             if (err) return reject(err);
             socket.ioObject.emit(`transaction_${renterId[0].user_id}`, {

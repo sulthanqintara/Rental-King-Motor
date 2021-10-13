@@ -11,7 +11,7 @@ const { http } = require("npmlog");
 const app = express();
 const httpServer = createServer(app);
 const cors = {
-  origin: ["http://localhost:3000"],
+  origin: ["http://localhost:3000", "http://192.168.0.101:3000"],
 };
 const io = new Server(httpServer, {
   cors,
