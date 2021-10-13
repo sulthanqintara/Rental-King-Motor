@@ -46,7 +46,7 @@ const getVehicles = (query) => {
     const limit = Number(query.limit) || 4;
     const offset = limit * (page - 1);
 
-    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture, v.popular_stats, v.owner FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} AND v.location LIKE "%${location}%" AND v.price >= ${minPrice} AND v.price <= ${maxPrice} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
+    let queryString = `SELECT v.id, vt.name_idn AS "kategori", vt.name_en AS "category", v.model, v.location, v.price, v.amount_available, v.picture, v.popular_stats, v.owner, u.name AS ownerName FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id JOIN users u ON v.owner = u.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} AND v.location LIKE "%${location}%" AND v.price >= ${minPrice} AND v.price <= ${maxPrice} ORDER BY ${order_by} ${sort} LIMIT ${limit} OFFSET ${offset}`;
 
     let queryCount = `SELECT COUNT(v.id) AS "total_vehicles" FROM vehicles v JOIN vehicle_types vt ON v.type_id = vt.id WHERE v.model LIKE "%${keyword}%" AND v.type_id ${filter} AND v.id ${idVehicle} AND v.location LIKE "%${location}%" ORDER BY ${order_by} ${sort}`;
 

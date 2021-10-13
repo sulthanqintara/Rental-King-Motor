@@ -28,10 +28,6 @@ app.use(express.static("public"));
 app.use(mainRouter);
 
 io.on("connection", (socket) => {
-  // socket.on("send_form", (body, calback) => {
-  //   console.log(body);
-  //   calback({ status: "OK" });
-  // });
   console.log("Socket Connected on", socket.id);
 });
 

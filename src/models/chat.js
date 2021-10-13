@@ -33,23 +33,16 @@ const postChat = (body) => {
         db.query(patchLatestChat, result[0].latest_id, (err, result) => {
           if (err) return reject(err);
           const newBody = { ...body, ...{ isLatest: 1 } };
+          console.log(newBody);
           const queryString = `INSERT INTO chat SET ?`;
           db.query(queryString, newBody, (err, result) => {
             if (err) return reject(err);
             const queryGetUserName = `SELECT name, uuid FROM users WHERE id = ?`;
             db.query(queryGetUserName, senderId, (err, userName) => {
               const senderName = userName[0].name;
-              console.log("ID Receiver", receiverId);
-              // io.emit(receiverId, {
-              //   message: body.message,
-              //   senderName,
-              // });
               socket.ioObject.emit(receiverId, {
                 message: body.message,
                 senderName,
-              });
-              socket.ioObject.sockets.on("connection", () => {
-                console.log("[CHAT DEBUG]");
               });
               return resolve("Chat Sent to db");
             });
@@ -62,7 +55,6 @@ const postChat = (body) => {
 
 const getLatestChat = (params) => {
   return new Promise((resolve, reject) => {
-    console.log(params.id);
     const userId = params.id;
     const queryString =
       "SELECT c.id , c.user_id_sender, c.user_id_receiver, us.name AS sender_name , ur.name AS receiver_name, us.profile_picture AS sender_profile_picture, ur.profile_picture AS receiver_profile_picture, c.message FROM chat c JOIN users us ON c.user_id_sender = us.id JOIN users ur ON c.user_id_receiver = ur.id WHERE (c.user_id_sender = ? OR c.user_id_receiver = ?) AND c.isLatest = 1";
