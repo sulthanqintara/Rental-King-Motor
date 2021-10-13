@@ -28,14 +28,16 @@ app.use(express.static("public"));
 app.use(mainRouter);
 
 io.on("connection", (socket) => {
-  console.log("[DEBUG] Socket query", socket.id);
-  socket.on("send_form", (body, calback) => {
-    console.log(body);
-    calback({ status: "OK" });
-  });
+  // socket.on("send_form", (body, calback) => {
+  //   console.log(body);
+  //   calback({ status: "OK" });
+  // });
+  console.log("Socket Connected on", socket.id);
 });
 
 // Base url => http://localhost:8000
 httpServer.listen(port, () => {
   console.log(`Server started at port ${port}`);
 });
+const socketIoObject = io;
+module.exports.ioObject = socketIoObject;

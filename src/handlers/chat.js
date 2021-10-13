@@ -17,7 +17,7 @@ const getChat = (req, res) => {
 const postChat = (req, res) => {
   const { body } = req;
   chatModel
-    .postChat(body)
+    .postChat(body, req)
     .then((data) => responseHelper.success(res, 200, data))
     .catch((err) => responseHelper.error(res, 500, err));
 };

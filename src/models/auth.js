@@ -23,6 +23,7 @@ const login = (body) => {
           dob: result[0].DOB,
           gender: result[0].gender,
           profilePic: result[0].profile_picture,
+          uuid: result[0].uuid,
         };
         const payload = {
           name: result[0].name,

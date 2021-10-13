@@ -1,3 +1,4 @@
+const socket = require("../../index");
 const db = require("../database/mysql");
 
 const getChatById = (query) => {
@@ -17,22 +18,45 @@ const getChatById = (query) => {
     );
   });
 };
+
 const postChat = (body) => {
   return new Promise((resolve, reject) => {
-    const sender = body.user_id_sender;
-    const getLatestChatId = `SELECT MAX(id) AS latest_id FROM chat WHERE user_id_sender = ? or user_id_sender = ?`;
-    db.query(getLatestChatId, [sender, sender], (err, result) => {
-      if (err) return reject(err);
-      const patchLatestChat = `UPDATE chat SET isLatest = 0 WHERE id = ?`;
-      db.query(patchLatestChat, result[0].latest_id, (err, result) => {
+    const senderId = body.user_id_sender;
+    const receiverId = body.user_id_receiver;
+    const getLatestChatId = `SELECT MAX(id) AS latest_id FROM chat WHERE (user_id_sender = ? or user_id_receiver = ?) AND (user_id_sender = ? or user_id_receiver = ?)`;
+    db.query(
+      getLatestChatId,
+      [senderId, senderId, receiverId, receiverId],
+      (err, result) => {
         if (err) return reject(err);
-        const queryString = `INSERT INTO chat SET ?`;
-        db.query(queryString, body, (err, result) => {
+        const patchLatestChat = `UPDATE chat SET isLatest = 0 WHERE id = ?`;
+        db.query(patchLatestChat, result[0].latest_id, (err, result) => {
           if (err) return reject(err);
-          return resolve("Chat Sent to db");
+          const newBody = { ...body, ...{ isLatest: 1 } };
+          const queryString = `INSERT INTO chat SET ?`;
+          db.query(queryString, newBody, (err, result) => {
+            if (err) return reject(err);
+            const queryGetUserName = `SELECT name, uuid FROM users WHERE id = ?`;
+            db.query(queryGetUserName, senderId, (err, userName) => {
+              const senderName = userName[0].name;
+              console.log("ID Receiver", receiverId);
+              // io.emit(receiverId, {
+              //   message: body.message,
+              //   senderName,
+              // });
+              socket.ioObject.emit(receiverId, {
+                message: body.message,
+                senderName,
+              });
+              socket.ioObject.sockets.on("connection", () => {
+                console.log("[CHAT DEBUG]");
+              });
+              return resolve("Chat Sent to db");
+            });
+          });
         });
-      });
-    });
+      }
+    );
   });
 };
 
