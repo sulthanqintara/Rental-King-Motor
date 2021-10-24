@@ -4,6 +4,7 @@ const morgan = require("morgan");
 // const cors = require("cors");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const db = require("./src/database/mysql");
 
 const mainRouter = require("./src/routers/");
 const { http } = require("npmlog");
@@ -35,6 +36,15 @@ io.on("connection", (socket) => {
 // Base url => http://localhost:8000
 httpServer.listen(port, () => {
   console.log(`Server started at port ${port}`);
+});
+db.getConnection(function (err, connection) {
+  connection.query("SELECT something FROM sometable", function (err, rows) {
+    console.log(pool._freeConnections.indexOf(connection)); // -1
+
+    connection.release();
+
+    console.log(pool._freeConnections.indexOf(connection)); // 0
+  });
 });
 const socketIoObject = io;
 module.exports.ioObject = socketIoObject;
