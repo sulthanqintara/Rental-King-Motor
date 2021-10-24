@@ -17,7 +17,7 @@ const cors = {
 const io = new Server(httpServer, {
   cors,
 });
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 // parser
 app.use(express.urlencoded({ extended: false }));
