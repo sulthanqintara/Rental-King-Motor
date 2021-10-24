@@ -134,7 +134,7 @@ const checkForgotCode = (body) => {
     const getEmailQuery = "SELECT id FROM users WHERE email = ?";
     db.query(getEmailQuery, email, (err, result) => {
       if (err) return reject(err);
-      const id = result[0].id;
+      const id = result[0]?.id;
       const checkCodeQuery =
         "SELECT code FROM forgot_password WHERE id = (SELECT max(id) FROM forgot_password) AND user_id = ? AND code = ?";
       db.query(checkCodeQuery, [id, code], (err, res) => {

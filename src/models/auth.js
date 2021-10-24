@@ -7,10 +7,12 @@ const login = (body) => {
     const { email, password } = body;
     const getPassQuery = "SELECT * FROM users where email = ?";
     db.query(getPassQuery, email, (err, result) => {
+      console.log(err);
       if (err) return reject(err);
       if (!result.length) return reject(401);
       const authLevel = Number(result[0].auth_level);
       bcrypt.compare(password, result[0].password, (err, compared) => {
+        console.log(err);
         if (err) return reject(err);
         if (!compared) return reject(401);
         const userInfo = {
@@ -38,9 +40,11 @@ const login = (body) => {
             issuer: "RKM DB",
           },
           (err, token) => {
+            console.log(err);
             if (err) return reject(err);
             const queryPostToken = `INSERT INTO active_token (token, time_issued) VALUES ("${token}",${Date.now()})`;
             db.query(queryPostToken, (err, result) => {
+              console.log(err);
               if (err) return reject(err);
               return resolve({ token, userInfo: userInfo });
             });
