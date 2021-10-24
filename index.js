@@ -38,12 +38,12 @@ httpServer.listen(port, () => {
   console.log(`Server started at port ${port}`);
 });
 db.getConnection(function (err, connection) {
-  connection.query("SELECT something FROM sometable", function (err, rows) {
-    console.log(pool._freeConnections.indexOf(connection)); // -1
+  connection.query("SELECT * FROM vehicles", function (err, rows) {
+    console.log(db._freeConnections.indexOf(connection)); // -1
 
     connection.release();
 
-    console.log(pool._freeConnections.indexOf(connection)); // 0
+    console.log(db._freeConnections.indexOf(connection)); // 0
   });
 });
 const socketIoObject = io;
