@@ -33,7 +33,6 @@ const postChat = (body) => {
         db.query(patchLatestChat, result[0].latest_id, (err, result) => {
           if (err) return reject(err);
           const newBody = { ...body, ...{ isLatest: 1 } };
-          console.log(newBody);
           const queryString = `INSERT INTO chat SET ?`;
           db.query(queryString, newBody, (err, result) => {
             if (err) return reject(err);
