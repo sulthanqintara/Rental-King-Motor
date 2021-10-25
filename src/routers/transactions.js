@@ -16,7 +16,6 @@ historyRouter.get(
 historyRouter.post(
   "/",
   authMiddleware.checkToken,
-  authMiddleware.authUser,
   transactionsHandler.postNewTransaction
 );
 historyRouter.patch(
