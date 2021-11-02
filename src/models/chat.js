@@ -28,23 +28,27 @@ const postChat = (body) => {
       getLatestChatId,
       [senderId, senderId, receiverId, receiverId],
       (err, result) => {
+        const newBody = { ...body, ...{ isLatest: 1 } };
+        console.log("result", result);
         if (err) return reject(err);
         const patchLatestChat = `UPDATE chat SET isLatest = 0 WHERE id = ?`;
-        db.query(patchLatestChat, result[0].latest_id, (err, result) => {
-          if (err) return reject(err);
-          const newBody = { ...body, ...{ isLatest: 1 } };
-          const queryString = `INSERT INTO chat SET ?`;
-          db.query(queryString, newBody, (err, result) => {
+        const latestId = result[0]?.latest_id;
+        if (latestId) {
+          db.query(patchLatestChat, result[0].latest_id, (err, result) => {
             if (err) return reject(err);
-            const queryGetUserName = `SELECT name, uuid FROM users WHERE id = ?`;
-            db.query(queryGetUserName, senderId, (err, userName) => {
-              const senderName = userName[0].name;
-              socket.ioObject.emit(receiverId, {
-                message: body.message,
-                senderName,
-              });
-              return resolve("Chat Sent to db");
+          });
+        }
+        const queryString = `INSERT INTO chat SET ?`;
+        db.query(queryString, newBody, (err, result) => {
+          if (err) return reject(err);
+          const queryGetUserName = `SELECT name, uuid FROM users WHERE id = ?`;
+          db.query(queryGetUserName, senderId, (err, userName) => {
+            const senderName = userName[0].name;
+            socket.ioObject.emit(receiverId, {
+              message: body.message,
+              senderName,
             });
+            return resolve("Chat Sent to db");
           });
         });
       }
