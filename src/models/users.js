@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const db = require("../database/mysql");
 const { v4: uuidv4 } = require("uuid");
+const nodemailer = require("nodemailer");
 
 const createNewUser = (body, file, hostname) => {
   return new Promise((resolve, reject) => {
@@ -120,6 +121,42 @@ const forgotPassword = (body) => {
       const code = Math.floor(Math.random() * (max - min) + min);
       const postCodeQuery =
         "INSERT INTO forgot_password (user_id, code) VALUES (? ,?)";
+
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.REACT_APP_EMAIL,
+          pass: process.env.REACT_APP_EMAIL_PASS,
+        },
+      });
+      const message = {
+        from: process.env.REACT_APP_EMAIL,
+        to: String(email),
+        subject: "Forgot Password Code",
+        html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+            <h1>
+            Rental King Motor
+           </h1>
+          </head>
+          <body>
+          <p>
+            Hi, this is your code for forgot password on Rental King Motor.
+          </p>
+          <h3>
+            ${code}
+          </h3>
+          </body>
+        </html>`,
+        text: `Hi, this is your code for forgot password on Rental King Motor. ${code}`,
+      };
+      transporter.sendMail(message, (err, info) => {
+        if (err) return resolve(err);
+        else console.log(info);
+      });
       db.query(postCodeQuery, [result[0].id, code], (err, res) => {
         if (err) return reject(err);
         return resolve("Code sent to database");
