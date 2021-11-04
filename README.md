@@ -1,4 +1,4 @@
-# Rental King Motor
+# Rental King Motor Backend
 
 This is code to be used as a CRUD API for Rental King Motor Website and Android app
 
