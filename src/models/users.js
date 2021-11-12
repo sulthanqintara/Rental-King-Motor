@@ -111,8 +111,8 @@ const editUser = (file, id, body, hostname) => {
 
 const forgotPassword = (body) => {
   return new Promise((resolve, reject) => {
-    console.log("email", process.env.REACT_APP_EMAIL);
-    console.log("password", process.env.REACT_APP_EMAIL_PASS);
+    // console.log("email", process.env.REACT_APP_EMAIL);
+    // console.log("password", process.env.REACT_APP_EMAIL_PASS);
     const { email } = body;
     const getEmailQuery = "SELECT id FROM users WHERE email = ?";
     db.query(getEmailQuery, email, (err, result) => {
@@ -156,13 +156,13 @@ const forgotPassword = (body) => {
         text: `Hi, this is your code for forgot password on Rental King Motor. ${code}`,
       };
       transporter.sendMail(message, (err, info) => {
-        console.log("log", err);
+        // console.log("log", err);
         if (err) return reject(err);
-        else console.log(info);
-      });
-      db.query(postCodeQuery, [result[0].id, code], (err, res) => {
-        if (err) return reject(err);
-        return resolve("Code sent to database");
+        // console.log(info);
+        db.query(postCodeQuery, [result[0].id, code], (err, res) => {
+          if (err) return reject(err);
+          return resolve("Code sent to database");
+        });
       });
     });
   });
