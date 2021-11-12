@@ -154,6 +154,7 @@ const forgotPassword = (body) => {
         text: `Hi, this is your code for forgot password on Rental King Motor. ${code}`,
       };
       transporter.sendMail(message, (err, info) => {
+        console.log("log", err);
         if (err) return resolve(err);
         else console.log(info);
       });
